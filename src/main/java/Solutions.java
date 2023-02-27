@@ -3,8 +3,8 @@ import java.util.*;
 public class Solutions {
 
     public static void main(String[] args) {
-        int[] mas = new int[] {8,10,14,0,13,10,9,9,11,11};
-        System.out.println(maxArea(mas));
+        int[] mas = new int[] {2, 2, 2, 2, 2};
+        System.out.println(fourSum(mas, 0));
 
 
     }
@@ -74,18 +74,18 @@ public class Solutions {
         return prefix;
     }
 
-    public class ListNode {
-        int val;
-        ListNode next;
-        ListNode() {}
-        ListNode(int val) {
-            this.val = val;
-        }
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
-  }
+//    public class ListNode {
+//        int val;
+//        ListNode next;
+//        ListNode() {}
+//        ListNode(int val) {
+//            this.val = val;
+//        }
+//        ListNode(int val, ListNode next) {
+//            this.val = val;
+//            this.next = next;
+//        }
+//    }
 
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
         if (list1 == null) {
@@ -429,5 +429,108 @@ public class Solutions {
             }
         }
         return closestSum;
+    }
+
+    public static List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> list = new ArrayList<>();
+        if (nums == null || nums.length < 4) {
+            return Collections.emptyList();
+        }
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            long newTarget = target - nums[i];
+
+            for (int j = i + 1; j < nums.length; j++) {
+                long remaining = newTarget - nums[j];
+                int left = j + 1;
+                int right = nums.length - 1;
+                while (left < right) {
+                    long sum = nums[left] + nums[right];
+
+                    if (sum == remaining) {
+                        list.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                        while (left < right && nums[left] == nums[left + 1]) {
+                            left++;
+                        }
+                        while (left < right && nums[right] == nums[right - 1]) {
+                            right--;
+                        }
+                        left++;
+                        right--;
+                    } else if (sum > remaining) {
+                        right--;
+                    } else {
+                        left++;
+                    }
+                }
+                while (j < nums.length - 1 && nums[j] == nums[j + 1]) {
+                    j++;
+                }
+            }
+            while (i < nums.length - 1 && nums[i] == nums[i + 1]) {
+                i++;
+            }
+
+        }
+        return list;
+    }
+
+    public class ListNode {
+        int val;
+        ListNode next;
+        ListNode() {}
+        ListNode(int val) { this.val = val; }
+        ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+    }
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode start = new ListNode(0);
+        ListNode left = start;
+        ListNode right = start;
+        left.next = head;
+
+        for (int i = 1; i <= n+1; i++) {
+            right = right.next;
+        }
+
+        while (right != null) {
+            left = left.next;
+            right = right.next;
+        }
+
+        left.next = left.next.next;
+        return start.next;
+    }
+
+    /**
+     * "()"
+     * "(())", "()()"
+     * "((()))", "(()())", "()()()", "()(())", "(())()"
+     * "(((())))", "((()()))", "(()()())", "()()()()", "(()(()))"
+     * @param n
+     * @return
+     */
+    public List<String> generateParenthesis(int n) {
+        List<String> list = new ArrayList<String>();
+        recursiveFunc(list, "", 0, 0, n);
+        return list;
+    }
+
+    public void recursiveFunc(List<String> listOfBuckets,
+                              String filledString,
+                              int openBracket, int closedBracket,
+                              int n){
+
+        if (filledString.length() == n * 2){
+            listOfBuckets.add(filledString);
+            return;
+        }
+
+        if (openBracket < n) {
+            recursiveFunc(listOfBuckets, filledString + "(", openBracket + 1, closedBracket, n);
+        }
+        if (closedBracket < openBracket) {
+            recursiveFunc(listOfBuckets, filledString + ")", openBracket, closedBracket + 1, n);
+        }
     }
 }
